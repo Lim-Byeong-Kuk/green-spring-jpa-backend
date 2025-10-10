@@ -8,6 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Commit;
 
 import java.util.*;
@@ -130,5 +134,47 @@ public class ProductRepositoryTests {
 
     }
 
+    @Test
+    public void testDelete() {
+        repository.deleteById(21l);
+    }
+
+    @Test
+    public void testUpdate() {
+        Long pno = 12l;
+        Product product = repository.selectOne(pno).get();
+        product.changeName("12번 상품");
+        product.changeDesc("12번 상품 설명입니다.");
+        product.changePrice(3400);
+
+        //첨부 파일 수정
+        product.clearList();
+        product.addImageString(UUID.randomUUID().toString()+"_"+"NewiMAGE1.jpg");
+        product.addImageString(UUID.randomUUID().toString()+"_"+"NewiMAGE2.jpg");
+        product.addImageString(UUID.randomUUID().toString()+"_"+"NewiMAGE3.jpg");
+        repository.save(product);
+        log.info("product: {}",product);
+    }
+
+    @Test
+    public void testList() {
+        Pageable pageable = PageRequest.of(0,10, Sort.by("pno").descending());
+        Page<Object[]> result = repository.selectList(pageable);
+        result.getContent().forEach(i -> log.info("data=> {}", i));
+    }
+
+    @Test
+    public void testList2() {
+        int size = repository.findAll().size();
+
+
+        int num = (int)(Math.ceil(size/10f));
+        for (int i=0; i<num ; i++) {
+            Pageable pageable = PageRequest.of(i,10, Sort.by("pno").descending());
+            Page<Object[]> result = repository.selectList(pageable);
+            result.getContent().forEach(p -> log.info("data => {}",p));
+        }
+
+    }
 
 }
