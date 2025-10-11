@@ -3,8 +3,8 @@ package com.green.blue.red.repository;
 import com.green.blue.red.domain.Product;
 import com.green.blue.red.domain.ProductImage;
 import com.green.blue.red.dto.NaDTO;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Commit;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -42,7 +43,7 @@ public class ProductRepositoryTests {
     // Product 100개, Product 1개당 이미지 3~7개
     @Test
     public void testInsert2() {
-        for(int i=0; i<100; i++) {
+        for(int i=0; i<50; i++) {
             Product product = Product.builder()
                     .pname("상품 이름"+i)
                     .price((int)(Math.random()*10000)+1)
@@ -160,6 +161,9 @@ public class ProductRepositoryTests {
     public void testList() {
         Pageable pageable = PageRequest.of(0,10, Sort.by("pno").descending());
         Page<Object[]> result = repository.selectList(pageable);
+
+        // 한페이지에 몇개를 보여줄지, 몇번째 페이지를 보여줘야할지, 정렬은 어떤 기준으로 어떻게 할지 pageable 이 담고 있음
+//        List<Object[]> content = result.getContent();
         result.getContent().forEach(i -> log.info("data=> {}", i));
     }
 
@@ -167,14 +171,98 @@ public class ProductRepositoryTests {
     public void testList2() {
         int size = repository.findAll().size();
 
-
         int num = (int)(Math.ceil(size/10f));
         for (int i=0; i<num ; i++) {
             Pageable pageable = PageRequest.of(i,10, Sort.by("pno").descending());
             Page<Object[]> result = repository.selectList(pageable);
             result.getContent().forEach(p -> log.info("data => {}",p));
         }
-
     }
+
+
+    @Test
+    @DisplayName("Product 2개")
+    public void insertTest() {
+        for(int i=0; i<2; i++) {
+            Product p = Product.builder()
+                    .pname("상품 이름"+i)
+                    .price(100*(i+5))
+                    .pdesc("상품 설명"+i)
+                    .build();
+            p.addImageString("image1.jpg");
+            p.addImageString("image2.jpg");
+            repository.save(p);
+            log.info("========");
+        }
+    }
+
+    @Test
+    @DisplayName("Product 수정")
+    public void updateTest() {
+        Product product = repository.selectOne(1l).get();
+
+        List<ProductImage> list = new ArrayList<>();
+        list.add(new ProductImage("fileName111",0));
+
+        Product updatedProduct = Product.builder()
+                .pname("상품이름111")
+                .pdesc("상품설명111")
+                .price(10000)
+                .pno(1l)
+                .imageList(list)
+                .build();
+
+        repository.save(updatedProduct);
+    }
+
+    @Test
+    @DisplayName("Product 수정, Dirty Checking 이용")
+    @Transactional // 테스트코드에서 @Transactional 을 붙이면 반영했다가 다시 롤백해,
+    @Commit
+    public void updateTest_DirtyCheckin() {
+        Product product = repository.selectOne(1l).get();
+        product.changeDesc("상품설명2222");
+        /* JPA는 같은 트랜잭션 안에서 한번 조회한 Entity 를 Snapshopt 으로 기억한다.
+        *  Entity 의 필드 값이 바뀌면 감지한다. -- Dirty Checking 이라고 불림
+        *  */
+    }
+
+    @Test
+    @DisplayName("Product 1개 삭제 테스트: 값타입의 종속성 테스트")
+    @Commit
+    @Transactional
+    public void deleteTest() {
+        repository.deleteById(2l);
+    }
+
+    @Test
+    @DisplayName("Lazy Loading Test1")
+    @Transactional
+    public void findById_LazyLoading() {
+        Product product = repository.findById(1l).get();
+    }
+
+    @Test
+    @DisplayName("Lazy Loading Test2: 지연 로딩")
+    @Transactional
+    public void findById_LazyLoading2() {
+
+        // 일단 findById 할때는 product 만 가져와
+        Product product = repository.findById(3l).get();
+        List<ProductImage> imageList = product.getImageList();
+        System.out.println("============================");
+        for(ProductImage image : imageList) {
+            // 안에 내용물을 가져오려고 할 때, 추가로 쿼리를 날려서 데이터 가져오기 -> 지연 로딩 (Lazy Loading)
+            String fileName = image.getFileName();
+        }
+    }
+
+    @Test
+    @DisplayName("Eager Loading Test1")
+    @Transactional
+    public void selectOne_EagerLoading() {
+        Product product = repository.selectOne(3l).get();
+    }
+
 
 }

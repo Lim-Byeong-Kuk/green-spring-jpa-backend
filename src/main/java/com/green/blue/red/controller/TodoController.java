@@ -19,6 +19,12 @@ import java.util.Map;
 @RequestMapping("/api/todo")
 public class TodoController {
 
+//    @Autowired
+    // 이렇게 코드를 작성하면 변경이 발생했을 때 안좋아, 파급효과가 크다 왜? 구현체에 의존한다
+    // 구현체에 의존하는 방식이 -> 객체지향 설계에서 좋은방식이 아니다. 왜??? 왜 좋은방식이 아니야
+    // 이걸 설명하기가 너무 어려워
+
+    // 스프링은 Dependency Injection 으로 구현체를 주입해 준다. 자동으로
     private final TodoService service;
 
     @GetMapping("/list")
