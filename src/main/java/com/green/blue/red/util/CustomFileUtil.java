@@ -89,4 +89,23 @@ public class CustomFileUtil {
         //브라우저가 encoding 된 데이터를 header 정보를 기반으로 decoding(복호화)
     }
 
+
+    public void deleteFiles(List<String> fileNames) {
+        if(fileNames == null || fileNames.size()==0) return;
+        fileNames.forEach(i -> {
+            //썸네일이 있는지 확인하고 삭제
+            String thumbnailFileName = "s_"+i;
+            Path thumbnailPath = Paths.get(uploadPath, thumbnailFileName);
+            Path filePath = Paths.get(uploadPath, i);
+            try {
+                Files.deleteIfExists(filePath);
+                Files.deleteIfExists(thumbnailPath);
+
+            } catch (IOException e) {
+                throw new RuntimeException((e.getMessage()));
+            }
+        });
+    }
+
+
 }

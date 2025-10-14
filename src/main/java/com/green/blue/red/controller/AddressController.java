@@ -4,7 +4,6 @@ import com.green.blue.red.domain.Address;
 import com.green.blue.red.domain.AddressImage;
 import com.green.blue.red.dto.AddressDTO;
 import com.green.blue.red.dto.PageRequestDTO;
-import com.green.blue.red.dto.PageResponseDTO;
 import com.green.blue.red.repository.AddressRepository;
 import com.green.blue.red.service.AddressService;
 import com.green.blue.red.util.CustomFileUtil;
@@ -19,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -62,6 +63,7 @@ public class AddressController {
 
         Page<Object[]> result = repository.selectList(pageable);
 
+
 //        List<AddressDTO> addressDtoList = result.get().map(i -> {
 //
 //            Address a = (Address) i[0];
@@ -73,19 +75,32 @@ public class AddressController {
 
 
 
-        List<AddressDTO> addressDtoList = result.get().map((i) -> {
-
-            Address a = (Address) i[0];
-
-            a.getAno();
-
-            AddressImage ai = (AddressImage) i[1];
-            AddressDTO addDTO = mapper.map(i, AddressDTO.class);
-            addDTO.setUploadFileNames(List.of(ai.getFileName()));
-            return addDTO;
-        }).toList();
+        Map<Long, AddressDTO> map = new LinkedHashMap<>();
 
 
-        return ResponseEntity.ok(addressDtoList);
+        result.getContent().forEach(arr -> {
+            Address address = (Address) arr[0];
+            AddressImage image = (AddressImage) arr[1];
+
+            AddressDTO addressDTO = map.computeIfAbsent(address.getAno(), k -> AddressDTO
+                    .builder()
+                    .ano(address.getAno())
+                    .age(address.getAge())
+                    .city(address.getCity())
+                    .gu(address.getGu())
+                    .dong(address.getDong())
+                    .uploadFileNames(new ArrayList<>())
+                    .build());
+
+            if(image != null) {
+                addressDTO.getUploadFileNames().add(image.getFileName());
+            }
+        });
+
+        List<AddressDTO> addressDTOList = map.values().stream().toList();
+
+        return ResponseEntity.ok(addressDTOList);
     }
+
+
 }
