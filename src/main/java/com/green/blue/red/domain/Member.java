@@ -1,9 +1,6 @@
 package com.green.blue.red.domain;
 
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -25,6 +22,7 @@ public class Member {
 
     @ElementCollection(fetch = FetchType.LAZY)
     @Builder.Default
+    @Enumerated(EnumType.STRING)
     private List<MemberRole> memberRoleList = new ArrayList<>();
     // Member 와 memberRoleList 는 1:N 관계 그러므로 memberRoleList쪽에 foreign key 가지고 있음
 
