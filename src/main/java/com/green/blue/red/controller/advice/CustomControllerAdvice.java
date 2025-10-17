@@ -1,5 +1,6 @@
 package com.green.blue.red.controller.advice;
 
+import com.green.blue.red.util.CustomJWTException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -21,5 +22,11 @@ public class CustomControllerAdvice {
     protected ResponseEntity<?> handleIllegalArgumentException(MethodArgumentNotValidException e) {
         String msg = e.getMessage();
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(Map.of("msg", msg));
+    }
+
+    @ExceptionHandler(CustomJWTException.class)
+    protected  ResponseEntity<?> handleJWTException(CustomJWTException e) {
+        String smg = e.getMessage();
+        return ResponseEntity.ok().body(Map.of("error", smg));
     }
 }

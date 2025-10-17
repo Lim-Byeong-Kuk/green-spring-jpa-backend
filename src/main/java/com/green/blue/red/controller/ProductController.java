@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.Response;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -44,6 +45,8 @@ public class ProductController {
     }
 
     //Page 당 전체 목록 조회
+    //임시 권한 설정
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
     @GetMapping("/list")
     public PageResponseDTO<ProductDTO> list(PageRequestDTO pageRequestDTO) {
         log.info("list controller .......... pageRequest:{}", pageRequestDTO);
