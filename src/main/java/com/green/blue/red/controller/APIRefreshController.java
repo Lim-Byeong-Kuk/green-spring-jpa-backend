@@ -15,6 +15,7 @@ import java.util.Map;
 @Slf4j
 public class APIRefreshController {
 
+    // accessToken 이 만료 되었을 때, 새로운 토큰을 받기 위해서 /api/member/refresh 요청을 보내는거에요
     @RequestMapping("/api/member/refresh")
     public Map<String, Object> refresh(@RequestHeader("Authorization") String authHeader, String refreshToken) {
 

@@ -1,50 +1,47 @@
-//package com.green.blue.red.repository;
-//
-//import com.green.blue.red.domain.Member;
-//import com.green.blue.red.domain.MemberRole;
-//import com.green.blue.red.dto.MemberDTO;
-//import lombok.extern.slf4j.Slf4j;
-//import org.junit.jupiter.api.Test;
-//import org.modelmapper.ModelMapper;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.context.SpringBootTest;
-//import org.springframework.security.crypto.password.PasswordEncoder;
-//
-//import java.util.*;
-//
-//@SpringBootTest
-//@Slf4j
-//public class MemberRepositoryTests {
-//
-//    @Autowired
-//    private MemberRepository memberRepository;
-//
-//    @Autowired
-//    private PasswordEncoder passwordEncoder;
-//
-//    @Autowired
-//    private ModelMapper mapper;
-//
-//    @Test
-//    public void testInsertMember() {
-//
-//        for(int i=0; i<10; i++) {
-//            Member member = Member.builder()
-//                    .email("user"+i+"@aaa.com")
-//                    .pw(passwordEncoder.encode("1111"))
-//                    .nickname("USER"+i)
-//                    .build();
-//            member.addRole(MemberRole.USER);
-//            if(i>=5) {
-//                member.addRole(MemberRole.MANAGER);
-//            }
-//            if(i>=8) {
-//                member.addRole(MemberRole.ADMIN);
-//            }
-//            memberRepository.save(member);
-//        }
-//    }
-//
+package com.green.blue.red.repository;
+
+import com.green.blue.red.domain.Member;
+import com.green.blue.red.domain.MemberRole;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Test;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+@SpringBootTest
+@Slf4j
+public class MemberRepositoryTests {
+
+    @Autowired
+    private MemberRepository memberRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private ModelMapper mapper;
+
+    @Test
+    public void testInsertMember() {
+
+        for(int i=0; i<10; i++) {
+            Member member = Member.builder()
+                    .email("user"+i+"@aaa.com")
+                    .pw(passwordEncoder.encode("1111"))
+                    .nickname("USER"+i)
+                    .build();
+            member.addRole(MemberRole.USER);
+            if(i>=5) {
+                member.addRole(MemberRole.MANAGER);
+            }
+            if(i>=8) {
+                member.addRole(MemberRole.ADMIN);
+            }
+            memberRepository.save(member);
+        }
+    }
+
 //    @Test
 //    public void testRead() {
 //        // 반복문 활용하여 user1, user9 까지 조회하고 MemberDTO 를 만들어서 저장
@@ -86,7 +83,7 @@
 //        System.out.println("resultmap : " +resultmap);
 //
 //    }
-//
+
 //    @Test
 //    public void testRead2() {
 //        // 반복문 활용하여 user1, user9 까지 조회하고 MemberDTO 를 만들어서 저장
@@ -123,11 +120,11 @@
 //        System.out.println("resultmap : " +resultmap);
 //
 //    }
-//
-//}
-//
-//
-//
-//
-//
-//
+
+}
+
+
+
+
+
+

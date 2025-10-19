@@ -26,7 +26,7 @@ public class JWTUtil {
         }
 
         String jwtStr = Jwts.builder()
-                .setHeader(Map.of("type","JWT"))
+                .setHeader(Map.of("typ","JWT"))
                 .setClaims(valueMap)
                 .setIssuedAt(Date.from(ZonedDateTime.now().toInstant()))
                 .setExpiration(Date.from(ZonedDateTime.now().plusMinutes(min).toInstant()))
@@ -47,12 +47,16 @@ public class JWTUtil {
                     .parseClaimsJws(token) //파싱 및 검증, 실패 시 에러
                     .getBody();
         } catch (MalformedJwtException malformedJwtException) {
+            // 토큰의 형식이 잘못되었을 때 (서명이 훼손되었거나 구조가 올바르지 않을 때)
             throw new CustomJWTException("Malformed");
         } catch (ExpiredJwtException expiredJwtException) {
+            // 토큰의 유효기간이 만료 되었을 때
             throw new CustomJWTException("Expired");
         } catch (InvalidClaimException invalidClaimException) {
+            // 클레임(정보)이 유효하지 않을 때
             throw new CustomJWTException("Invalid");
         } catch (JwtException jwtException) {
+            // 위의 경우를 제외한 일반적인 JWT 관련 오류
             throw new CustomJWTException("JWTError");
         } catch (Exception e) {
             throw new CustomJWTException("Error");

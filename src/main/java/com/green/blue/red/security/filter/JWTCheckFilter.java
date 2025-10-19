@@ -55,10 +55,16 @@ public class JWTCheckFilter extends OncePerRequestFilter {
             log.info("------------------");
             log.info("memberDTO : {} , authorities => {}", memberDTO, memberDTO.getAuthorities());
 
+            // Authentication 객체 생성 ( 인증된 상태 )
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(memberDTO, pw, memberDTO.getAuthorities());
 
+            // SecurityContextHolder 에 Authetntication 객체 저장
+            // 이후 컨트롤러에서
+            // Authentication auth = SecurityContextHolder.getContext().getAuthentication(); 으로 꺼낼 수 있음
+            // auth.getPrincipal() 로 MemberDTO 를 꺼낼 수 있다.
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
+            // 다음 필터로 요청 넘김
             filterChain.doFilter(request, response);
         } catch (Exception e) {
             log.error("JWT Check Error.........");
