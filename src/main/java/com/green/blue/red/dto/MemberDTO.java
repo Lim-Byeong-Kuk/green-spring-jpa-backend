@@ -28,6 +28,7 @@ public class MemberDTO extends User {
         super(email, pw, roleNames.stream().map(i->new SimpleGrantedAuthority("ROLE_"+i)).toList());
         this.email=email;
         this.pw=pw;
+        this.nickname=nickname;
         this.social=social;
         this.roleNames=roleNames;
     }

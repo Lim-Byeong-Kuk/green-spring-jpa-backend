@@ -3,6 +3,7 @@ package com.green.blue.red.repository;
 import com.green.blue.red.domain.Member;
 import com.green.blue.red.domain.MemberRole;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,42 @@ public class MemberRepositoryTests {
             }
             memberRepository.save(member);
         }
+    }
+
+    @Test
+    @DisplayName("매니저 권한만 있는 유저 추가")
+    public void testInsertMember2() {
+
+        Member member = Member.builder()
+                .email("user"+10+"@aaa.com")
+                .pw(passwordEncoder.encode("1111"))
+                .nickname("USER"+10)
+                .build();
+        member.addRole(MemberRole.MANAGER);
+        memberRepository.save(member);
+
+    }
+
+    @Test
+    @DisplayName("내 이메일 하나 넣어주기")
+    public void testInsertMember3() {
+
+        Member member = Member.builder()
+                .email("bye0414@naver.com")
+                .pw(passwordEncoder.encode("1111"))
+                .nickname("BK")
+                .build();
+        member.addRole(MemberRole.USER);
+        member.addRole(MemberRole.MANAGER);
+        member.addRole(MemberRole.ADMIN);
+        memberRepository.save(member);
+
+    }
+
+    @Test
+    @DisplayName("내 아이디 삭제")
+    public void testDelete() {
+        memberRepository.deleteById("bye0414@naver.com");
     }
 
 //    @Test

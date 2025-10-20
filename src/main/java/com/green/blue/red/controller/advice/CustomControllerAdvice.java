@@ -26,7 +26,7 @@ public class CustomControllerAdvice {
 
     @ExceptionHandler(CustomJWTException.class)
     protected  ResponseEntity<?> handleJWTException(CustomJWTException e) {
-        String smg = e.getMessage();
-        return ResponseEntity.ok().body(Map.of("error", smg));
+        String msg = e.getMessage();
+        return ResponseEntity.ok().body(Map.of("error", msg));
     }
 }
