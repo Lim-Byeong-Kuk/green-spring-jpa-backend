@@ -89,6 +89,7 @@ public class MemberServiceImpl implements MemberService{
 
         String kakaoGetUserURL = "https://kapi.kakao.com/v2/user/me";
         if(accessToken==null) throw new RuntimeException("Access Token is null");
+
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer "+accessToken);

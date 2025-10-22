@@ -29,12 +29,16 @@ public class CustomSecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
+        //모든 오리진(도메인)에서의 요청을 허용
         configuration.setAllowedOriginPatterns(Arrays.asList("*"));
         configuration.setAllowedMethods(Arrays.asList("HEAD","GET","POST","PUT","DELETE"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+        //자격 증명(Credentials), 즉 쿠키(Cookies)나 인증 헤더를 요청에 포함하는 것을 허용
         configuration.setAllowCredentials(true);
 
+        //UrlBasedCorsConfigurationSource는 경로 기반으로 CORS 설정을 관리하는 클래스
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+
         source.registerCorsConfiguration("/**",configuration);
 
         return source;
@@ -63,9 +67,14 @@ public class CustomSecurityConfig {
 
 
         // 폼 로그인 설정
-        // 로그인 요청 URL : /api/member/login   -> /login/member/login 으로 POST 요청을 보낼 때 인증절차를 수행
+        // 로그인 요청 URL : /api/member/login   -> /api/member/login 으로 POST 요청을 보낼 때 인증절차를 수행
         // 스프링 시큐리티는 원래 디폴트로 /login  -> url 로 요청을 보내면 구현해 놓은 로그인 페이지를 보여줌
         // 그리고 거기서 로그인 하면 post 방식으로 /login 으로 요청이 오는 것
+        // 우리는 우리가 만든 로그인페이지를 이용할 것이기 때문에 url 을 다르게 지정하는 것
+        // config.loginPage("/api/member/login"); 이렇게 loginPage() 라는 이름때문에 마치 페이지를 지정하는 것 같은 느낌이 드는데
+        // 위에서 말했다시피 원래는 스프링 시큐리티가 /login 이라는 페이지를 디폴트로 제공함, 이러한 맥락에서 메서드 이름이 정해진것 같음
+        // 그러나 우리는 react 에서 우리가 만든 페이지를 사용하기 때문에
+        // login 요청시 /api/member/login 이렇게 서버로 요청이 온다고 생각하면 됨
 
         // 인증 성공 시 APILoginSuccessHandler 동작
         // 인증 실패 시 APILoginFailHandler 동작
