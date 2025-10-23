@@ -98,7 +98,7 @@ public class CustomSecurityConfig {
         });
 
         // UsernamePasswordAuthenticationFilter 가 동작하기 전에 JWTCheckFilter 를 먼저 동작시키겠다.
-        // 클라이언트가 보낸 요청 헤더를 확인하고 JWT 가 유효한지 검사
+        // JWTCheckFilter 는 클라이언트가 보낸 요청 헤더를 확인하고 JWT 가 유효한지 검사
         http.addFilterBefore(new JWTCheckFilter(), UsernamePasswordAuthenticationFilter.class);
 
 
