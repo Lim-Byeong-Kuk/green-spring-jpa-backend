@@ -37,7 +37,7 @@ public class CartServiceImpl implements CartService{
             return getCartItems(email);
         }
 
-        //장바구니 아이템 번호 cino가 없는 경우
+        //장바구니 아이템 번호 cino가 없는 경우 ( Add Cart, 장바구니 추가 )
         Cart cart = getCart(email);
         CartItem cartItem = null;
 
